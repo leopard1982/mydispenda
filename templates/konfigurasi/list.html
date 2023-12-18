@@ -1,0 +1,18 @@
+{% extends 'fullmenu.html' %}
+
+{% block contents%}
+<div class="h3 p-2 fw-bold">&rarr; Daftar Konfigurasi</div>
+<div>
+    <table class='table'>
+        <tr>
+            <td>Kepala Bapeda:</td>
+            <td>{{data.Kepala_Bapeda}}</td>
+        </tr>
+        <tr>
+            <td>Apakah PLT:</td>
+            <td>{%if data.isPLT%} Pejabat PLT {% else%} Bukan Pejabat PLT {%endif%}</td>
+        </tr>
+    </table>
+</div>
+
+{% endblock %}

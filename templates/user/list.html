@@ -1,0 +1,24 @@
+{% extends 'fullmenu.html' %}
+
+{% block contents%}
+<div class="h3 p-2 fw-bold">&rarr; Daftar User</div>
+<div>
+    <table class='table'>
+        <thead>
+            <th>No.</th>
+            <th>Username</th>
+            <th>Otorisasi</th>
+            <th>Action</th>
+        </thead>
+        {% for datanya in data %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{datanya.username}}</td>
+            <td><span class='badge bg-success'>view master</span> {% if datanya.isCreate %}<span class='badge bg-danger'>create master</span>{% endif%} {% if datanya.isUpdate%}<span class='badge bg-info'>update master</span>{% endif%}</td>
+            <td><button type='button' class="btn btn-secondary">view</button> <button type='button' class="btn btn-primary">reset password</button> <button type='button' class="btn btn-danger">delete</button></td>
+        </tr>
+        {% endfor%}
+    </table>
+</div>
+
+{% endblock %}
