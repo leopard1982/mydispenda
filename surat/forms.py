@@ -1,6 +1,7 @@
 from django import forms
-from surat.models import Pegawai, Jabatan, Struktur, Konfigurasi, SuratTugas, RealUser
+from surat.models import Pegawai, Jabatan, Struktur, Konfigurasi, SuratTugas, RealUser, DasarSuratTugas
 from django.contrib.auth.models import User
+from bootstrap_datepicker_plus.widgets import DatePickerInput
 
 class Konfigurasi_Form(forms.Form):
     class Meta:
@@ -10,29 +11,28 @@ class Konfigurasi_Form(forms.Form):
 class SuratTugas_Form(forms.ModelForm):
     class Meta:
         model = SuratTugas
-        fields = "__all__"
+        fields = ['Nomor_Surat','Tanggal_Surat','Ketua_Tim','Tugas','Lokasi_Tugas','Tanggal_Tugas']
 
         widgets = {
             'Nomor_Surat': forms.TextInput(attrs={'class':'form-control my-1','required':'required','placeholder':'Nomor Surat'}),
-            'Tanggal_Surat': forms.TextInput(attrs={'class':'form-control my-1','required':'required','placeholder':'misal. 14 - 16 Maret 2023'}),
+            'Tanggal_Surat': DatePickerInput(attrs={'class':'form-control my-1','required':'required'}),
+            'Ketua_Tim': forms.Select(attrs={'class':'form-select my-1','required':'required'}),
             'Tugas': forms.TextInput(attrs={'class':'form-control my-1','required':'required','placeholder':'Detail Penugasan'}),
             'Lokasi_Tugas': forms.TextInput(attrs={'class':'form-control my-1','required':'required','placeholder':'Lokasi Tugas'}),
-            'Tanggal_Tugas': forms.DateInput(attrs={'class':'form-control my-1','required':'required'}),    
-            'Kepala_Bapeda': forms.Select(attrs={'class':'form-select my-1','required':'required'}),        
+            'Tanggal_Tugas': forms.DateInput(attrs={'class':'form-control my-1','required':'required','placeholder': 'misal: 17-21 Maret 2023'}),    
         }
 
 class SuratTugas_Update(forms.ModelForm):
     class Meta:
         model = SuratTugas
-        fields = "__all__"
+        fields = ['Nomor_Surat','Tanggal_Surat','Tugas','Lokasi_Tugas','Tanggal_Tugas']
 
         widgets = {
             'Nomor_Surat': forms.TextInput(attrs={'class':'form-control my-1','required':'required','readonly':'readonly','placeholder':'Nomor Surat'}),
-            'Tanggal_Surat': forms.TextInput(attrs={'class':'form-control my-1','required':'required','placeholder':'misal. 14 - 16 Maret 2023'}),
+            'Tanggal_Surat': DatePickerInput(),
             'Tugas': forms.TextInput(attrs={'class':'form-control my-1','required':'required','placeholder':'Detail Penugasan'}),
             'Lokasi_Tugas': forms.TextInput(attrs={'class':'form-control my-1','required':'required','placeholder':'Lokasi Tugas'}),
-            'Tanggal_Tugas': forms.DateInput(attrs={'class':'form-control my-1','required':'required'}),    
-            'Kepala_Bapeda': forms.Select(attrs={'class':'form-select my-1','required':'required'}),        
+            'Tanggal_Tugas': forms.TextInput(attrs={'class':'form-control my-1','required':'required'}),         
         }
 
 
@@ -102,33 +102,7 @@ class Pegawai_Update(forms.ModelForm):
             'Kelamin': forms.Select(attrs={'class':'form-select my-1','required':'required'}),
         }
 
-class SuratTugas_Form(forms.ModelForm):
-    class Meta:
-        model = SuratTugas
-        fields = "__all__"
 
-        widgets = {
-            'Nomor_Surat': forms.TextInput(attrs={'class':'form-control my-1','required':'required','placeholder':'Nomor Surat'}),
-            'Tanggal_Surat': forms.TextInput(attrs={'class':'form-control my-1','required':'required','placeholder':'misal. 14 - 16 Maret 2023'}),
-            'Tugas': forms.TextInput(attrs={'class':'form-control my-1','required':'required','placeholder':'Detail Penugasan'}),
-            'Lokasi_Tugas': forms.TextInput(attrs={'class':'form-control my-1','required':'required','placeholder':'Lokasi Tugas'}),
-            'Tanggal_Tugas': forms.DateInput(attrs={'class':'form-control my-1','required':'required'}),    
-            'Kepala_Bapeda': forms.Select(attrs={'class':'form-select my-1','required':'required'}),        
-        }
-
-class SuratTugas_Update(forms.ModelForm):
-    class Meta:
-        model = SuratTugas
-        fields = "__all__"
-
-        widgets = {
-            'Nomor_Surat': forms.TextInput(attrs={'class':'form-control my-1','required':'required','readonly':'readonly','placeholder':'Nomor Surat'}),
-            'Tanggal_Surat': forms.TextInput(attrs={'class':'form-control my-1','required':'required','placeholder':'misal. 14 - 16 Maret 2023'}),
-            'Tugas': forms.TextInput(attrs={'class':'form-control my-1','required':'required','placeholder':'Detail Penugasan'}),
-            'Lokasi_Tugas': forms.TextInput(attrs={'class':'form-control my-1','required':'required','placeholder':'Lokasi Tugas'}),
-            'Tanggal_Tugas': forms.DateInput(attrs={'class':'form-control my-1','required':'required'}),    
-            'Kepala_Bapeda': forms.Select(attrs={'class':'form-select my-1','required':'required'}),        
-        }
 
 class User_Form(forms.ModelForm):
     class Meta:
@@ -163,4 +137,13 @@ class Konfigurasi_Form(forms.ModelForm):
         widgets = {
             'Kepala_Bapeda': forms.Select(attrs={'class':'form-select my-1','required':'required'}),
             'isPLT': forms.CheckboxInput(attrs={'class':'form-check-input my-1'}),        
+        }
+
+class DasarSuratTugas_Form(forms.ModelForm):
+    class Meta:
+        model = DasarSuratTugas
+        fields = ['dasar']
+
+        widgets = {
+            'dasar': forms.TextInput(attrs={'class':'form-control my-1','required':'required'}),        
         }

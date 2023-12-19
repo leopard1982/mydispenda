@@ -1,7 +1,8 @@
-from django.shortcuts import render, HttpResponseRedirect
+from django.shortcuts import render, HttpResponseRedirect, HttpResponse
 from surat.forms import Pegawai_Form, Jabatan_Form, SuratTugas_Form,Pegawai_Update, Struktur_Form
-from surat.forms import SuratTugas_Update, Struktur_Update, User_Form, Konfigurasi_Form
-from surat.models import Pegawai,Jabatan, Struktur, RealUser, Konfigurasi
+from surat.forms import SuratTugas_Update, Struktur_Update, User_Form, Konfigurasi_Form, SuratTugas_Form
+from surat.forms import DasarSuratTugas_Form
+from surat.models import Pegawai,Jabatan, Struktur, RealUser, Konfigurasi, SuratTugas,DasarSuratTugas
 from django.contrib.auth import authenticate
 from django.contrib.auth import login,logout
 from django.contrib.auth.models import User
@@ -183,6 +184,7 @@ def Konfigurasi_create(request):
         myform = Konfigurasi_Form(request.POST)
         if myform.is_valid():
             myform.save()
+            return HttpResponseRedirect('/konfigurasi/list/')
     
     myform = Konfigurasi_Form()
     context = {
@@ -201,3 +203,52 @@ def Konfigurasi_list(request):
         'data': data
     }
     return render(request,'konfigurasi/list.html', context)
+
+def SuratTugas_create(request):
+    if(not request.user.is_authenticated):
+        return HttpResponseRedirect('/')
+    try:
+        nomorsurat = request.GET['surat']
+        return render(request,'surattugas/create_detail.html')
+    except:
+        pass
+    if(request.method == 'POST'):
+        form = SuratTugas_Form(request.POST)
+        if(form.is_valid()):
+            form.save()
+            Kepala_Bapedanya = Konfigurasi.objects.all()[0].Kepala_Bapeda.Nama
+            SuratTugas.objects.filter(Nomor_Surat = request.POST['Nomor_Surat']).update(Kepala_Bapeda=Kepala_Bapedanya)
+            return HttpResponseRedirect('/surattugas/create/?surat=' + request.POST['Nomor_Surat'])
+    form = SuratTugas_Form()
+    context = {
+        'form':form
+    }
+    return render(request,'surattugas/create.html', context)
+
+def SuratTugas_list(request):
+    data = SuratTugas.objects.all()
+    context = {
+        'data':data
+    }
+    return render(request,'surattugas/list.html', context)
+
+def DasarTugas_create(request):
+    if(not request.user.is_authenticated):
+        return HttpResponseRedirect('/')
+    if(request.method == 'POST'):
+        form = DasarSuratTugas_Form(request.POST)
+        if(form.is_valid()):
+            form.save()
+            return HttpResponseRedirect('/dasartugas/list/')
+    form = DasarSuratTugas_Form()
+    context = {
+        'form':form
+    }
+    return render(request,'dasarnya/create.html', context)
+
+def DasarTugas_list(request):
+    data = DasarSuratTugas.objects.all()
+    context = {
+        'data':data
+    }
+    return render(request,'dasarnya/list.html', context)

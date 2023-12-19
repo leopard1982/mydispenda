@@ -3,6 +3,7 @@ from surat.views import Login,Pegawai_create, Pegawai_delete, Pegawai_list, Pega
 from surat.views import Jabatan_create,Jabatan_delete, Jabatan_list, Jabatan_update
 from surat.views import Struktur_create,Struktur_delete,Struktur_list,Struktur_update
 from surat.views import User_list, User_create, User_delete, User_update, Konfigurasi_list, Konfigurasi_create
+from surat.views import SuratTugas_create, DasarTugas_create, SuratTugas_list, DasarTugas_list
 
 urlpatterns = [
     path('', Login,name="Login"),
@@ -25,5 +26,8 @@ urlpatterns = [
     path('user/delete/',User_delete,name='user_delete'),
     path('konfigurasi/list/',Konfigurasi_list,name='konfigurasi_list'),
     path('konfigurasi/create/',Konfigurasi_create,name='konfigurasi_create'),
-
+    path('surattugas/create/',SuratTugas_create,name='SuratTugas_create'),
+    path('dasartugas/create/',DasarTugas_create,name='DasarTugas_create'),
+    path('surattugas/list/',SuratTugas_list,name='SuratTugas_list'),
+    path('dasartugas/list/',DasarTugas_list,name='DasarTugas_list'),
 ]

@@ -35,6 +35,7 @@ class Konfigurasi(models.Model):
     Kepala_Bapeda = models.OneToOneField(Pegawai,on_delete=models.RESTRICT)
     isPLT = models.BooleanField(default=False)
 
+
 class RealUser(User):
     isCreate = models.BooleanField(default=False)
     isUpdate = models.BooleanField(default=False)
@@ -49,7 +50,9 @@ class SuratTugas(models.Model):
     Tugas = models.CharField(max_length=200)
     Lokasi_Tugas = models.CharField(max_length=30)
     Tanggal_Tugas = models.CharField(max_length=30)
-    Kepala_Bapeda = models.ForeignKey(Konfigurasi,on_delete=models.RESTRICT)
+    Kepala_Bapeda = models.CharField(max_length=50,null=True,blank=True)
+    Ketua_Tim = models.ForeignKey(Pegawai,on_delete=models.RESTRICT)
+    isDone = models.BooleanField(default=False)
 
 class ST_Dasar(models.Model):
     Nomor_Surat = models.ForeignKey(SuratTugas, on_delete=models.RESTRICT)
