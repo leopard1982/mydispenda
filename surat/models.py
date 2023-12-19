@@ -58,9 +58,15 @@ class ST_Dasar(models.Model):
     Nomor_Surat = models.ForeignKey(SuratTugas, on_delete=models.RESTRICT)
     Dasar = models.ForeignKey(DasarSuratTugas,on_delete=models.RESTRICT)
 
+    class Meta:
+        unique_together = ['Nomor_Surat','Dasar']
+
 class ST_Peserta(models.Model):
     Nomor_Surat = models.ForeignKey(SuratTugas,on_delete=models.RESTRICT)
     Peserta = models.ForeignKey(Pegawai,on_delete=models.RESTRICT)
+
+    class Meta:
+        unique_together = ['Nomor_Surat','Peserta']
 
 
 

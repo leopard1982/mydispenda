@@ -3,9 +3,11 @@ from surat.forms import Pegawai_Form, Jabatan_Form, SuratTugas_Form,Pegawai_Upda
 from surat.forms import SuratTugas_Update, Struktur_Update, User_Form, Konfigurasi_Form, SuratTugas_Form
 from surat.forms import DasarSuratTugas_Form
 from surat.models import Pegawai,Jabatan, Struktur, RealUser, Konfigurasi, SuratTugas,DasarSuratTugas
+from surat.models import ST_Dasar, ST_Peserta
 from django.contrib.auth import authenticate
 from django.contrib.auth import login,logout
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 # Create your views here.
 def Login(request):
@@ -207,11 +209,33 @@ def Konfigurasi_list(request):
 def SuratTugas_create(request):
     if(not request.user.is_authenticated):
         return HttpResponseRedirect('/')
+    
+    isGet = False
     try:
         nomorsurat = request.GET['surat']
-        return render(request,'surattugas/create_detail.html')
+        isGet=True
     except:
         pass
+
+    if(isGet):
+        surattugas = SuratTugas.objects.all().get(Nomor_Surat=nomorsurat)
+        
+        peserta = ST_Peserta.objects.filter(Nomor_Surat=surattugas)
+        dasar = ST_Dasar.objects.filter(Nomor_Surat=surattugas)
+        
+
+        list_peserta = Pegawai.objects.all().filter(~Q(Nama=surattugas.Ketua_Tim) & ~Q(Nama=surattugas.Kepala_Bapeda))
+        list_dasar = DasarSuratTugas.objects.all()
+        
+        context = {
+                'surattugas':surattugas,
+                'peserta': peserta,
+                'dasar':dasar,
+                'list_peserta':list_peserta,
+                'list_dasar':list_dasar,
+        }
+        return render(request,'surattugas/create_detail.html',context)
+    
     if(request.method == 'POST'):
         form = SuratTugas_Form(request.POST)
         if(form.is_valid()):
@@ -252,3 +276,33 @@ def DasarTugas_list(request):
         'data':data
     }
     return render(request,'dasarnya/list.html', context)
+
+def Anggota_Tambah(request):
+    try:
+        nomorsurat = request.GET['surat']
+    except:
+        return HttpResponseRedirect('/surattugas/list/')
+    try:
+        st_peserta = ST_Peserta()
+        #.objects.create(Dasar=DasarSuratTugas.objects.get(dasar=request.POST['dasarnya']),Surat_Tugas=SuratTugas.objects.get(Nomor_Surat=nomorsurat))
+        st_peserta.Nomor_Surat = SuratTugas.objects.get(Nomor_Surat=nomorsurat)
+        st_peserta.Peserta = Pegawai.objects.get(NIP=request.POST['pesertanya'])
+        st_peserta.save()
+    except:
+        pass
+    return HttpResponseRedirect('/surattugas/create/?surat=' + nomorsurat)
+
+def Dasar_Tambah(request):
+    try:
+        nomorsurat = request.GET['surat']
+    except:
+        return HttpResponseRedirect('/surattugas/list/')
+    try:
+        st_dasar = ST_Dasar()
+        #.objects.create(Dasar=DasarSuratTugas.objects.get(dasar=request.POST['dasarnya']),Surat_Tugas=SuratTugas.objects.get(Nomor_Surat=nomorsurat))
+        st_dasar.Nomor_Surat = SuratTugas.objects.get(Nomor_Surat=nomorsurat)
+        st_dasar.Dasar = DasarSuratTugas.objects.get(dasar=request.POST['dasarnya'])
+        st_dasar.save()
+    except:
+        pass
+    return HttpResponseRedirect('/surattugas/create/?surat=' + nomorsurat)
