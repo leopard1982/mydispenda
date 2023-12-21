@@ -53,6 +53,7 @@ class SuratTugas(models.Model):
     Kepala_Bapeda = models.CharField(max_length=50,null=True,blank=True)
     Ketua_Tim = models.ForeignKey(Pegawai,on_delete=models.RESTRICT)
     isDone = models.BooleanField(default=False)
+    ID_NomorSurat = models.IntegerField(null=True,blank=True)
 
 class ST_Dasar(models.Model):
     Nomor_Surat = models.ForeignKey(SuratTugas, on_delete=models.RESTRICT)

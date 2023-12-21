@@ -8,6 +8,10 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login,logout
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django.conf import settings
+import os
+import random
+import docx
 
 # Create your views here.
 def Login(request):
@@ -241,7 +245,7 @@ def SuratTugas_create(request):
         if(form.is_valid()):
             form.save()
             Kepala_Bapedanya = Konfigurasi.objects.all()[0].Kepala_Bapeda.Nama
-            SuratTugas.objects.filter(Nomor_Surat = request.POST['Nomor_Surat']).update(Kepala_Bapeda=Kepala_Bapedanya)
+            SuratTugas.objects.filter(Nomor_Surat = request.POST['Nomor_Surat']).update(Kepala_Bapeda=Kepala_Bapedanya, ID_NomorSurat=random.random()*1000000)
             return HttpResponseRedirect('/surattugas/create/?surat=' + request.POST['Nomor_Surat'])
     form = SuratTugas_Form()
     context = {
@@ -306,3 +310,23 @@ def Dasar_Tambah(request):
     except:
         pass
     return HttpResponseRedirect('/surattugas/create/?surat=' + nomorsurat)
+
+def Exportkan(request):
+    try:
+        nomorsurat = request.GET['nosur']
+    except:
+        nomorsurat = None
+
+    if nomorsurat is not None:
+        x = docx.Document()
+        x.add_heading(nomorsurat,0)
+        x.save(os.path.join(settings.BASE_DIR,str(nomorsurat) + '.docx'))
+
+        x = open(os.path.join(settings.BASE_DIR,str(nomorsurat) + '.docx'),'rb')
+ 
+        resp = HttpResponse(x,content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+        filename = str(nomorsurat) + '.docx'
+        resp['Content-Disposition']='attachment;filename=%s'%format(filename)
+        return resp
+    else:
+        return HttpResponse("nomor surat g ketemu mennnn")
