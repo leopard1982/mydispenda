@@ -12,6 +12,7 @@ from django.conf import settings
 import os
 import random
 import docx
+from docx.shared import Pt,Cm
 
 # Create your views here.
 def Login(request):
@@ -314,17 +315,58 @@ def Dasar_Tambah(request):
 def Exportkan(request):
     try:
         nomorsurat = request.GET['nosur']
+        surattugas = SuratTugas.objects.get(ID_NomorSurat=nomorsurat)
     except:
         nomorsurat = None
 
     if nomorsurat is not None:
-        x = docx.Document()
-        x.add_heading(nomorsurat,0)
-        x.save(os.path.join(settings.BASE_DIR,str(nomorsurat) + '.docx'))
+        document = docx.Document()
 
-        x = open(os.path.join(settings.BASE_DIR,str(nomorsurat) + '.docx'),'rb')
+        font = document.styles['Normal'].font
+        font.name = "Time New Roman"
+        font.size = Pt(12)
+
+        sections = document.sections
+        for section in sections:
+            section.top_margin = Cm(2)
+            section.left_margin = Cm(2)
+            section.right_margin = Cm(2)
+            section.bottom_margin = Cm(2)
+
+        document.add_picture(os.path.join(settings.BASE_DIR,'static/img/kop_surat.png'),width=Cm(17), height=Cm(4))
+
+        paragraph = document.add_paragraph()
+        runner = paragraph.add_run("SURAT PERINTAH TUGAS")
+        runner.bold=True
+        runner.underline=True
+        runner = paragraph.add_run("\nNomor: %s"%surattugas.Nomor_Surat)
+        paragraph.alignment = 1
+
+        table = document.add_table(rows=1,cols=2)
+        row = table.rows[0].cells
+        row[0].add_paragraph("DASAR:")
+        row[1].add_paragraph("Keputusan Menteri Dalam Negeri Nomor 16 Tahun 2013 tanggal 23 Januari 2013 tentang Pelaksanaan Perjalanan Dinas;",style="List Number")
+        row[1].add_paragraph("Peraturan Daerah Provinsi Jawa Tengah Nomor 12 Tahun 2021 tentang Anggaran Pendapatan dan Belanja Daerah Provinsi Jawa Tengah Tahun Anggaran 2022;",style="List Number")
+        row[1].add_paragraph("Peraturan Gubernur Jawa Tengah Nomor 17 Tahun 2013 tentang Perjalanan Dinas Gubernur / Wakil Gubernur, Pimpinan dan Anggota Dewan Perwakilan Rakyat Daerah, Pegawai Negeri Sipil, Calon Pegawai Negeri Sipil Dan Pegawai Non Pegawai Negeri Sipil;",style="List Number")
+        row[1].add_paragraph("Peraturan Gubernur Jawa Tengah Nomor 27 Tahun 2020  tentang Standar Harga Satuan Provinsi Jawa;",style="List Number")
+        print(surattugas)
+        #lookup for dasar tambahan
+        dasar = ST_Dasar.objects.all().filter(Nomor_Surat=SuratTugas.objects.get(ID_NomorSurat=nomorsurat))
+        if(dasar.count()>0):
+            for dasarnya in dasar:
+                row[1].add_paragraph(dasarnya.Dasar.dasar + ";",style="List Number")
+
+        for cell in table.columns[0].cells:
+            cell.width = Cm(3)
+        for cell in table.columns[1].cells:
+            cell.width = Cm(14)
+        
+
+        document.save(os.path.join(settings.BASE_DIR,str(nomorsurat) + '.docx'))
+
+        document = open(os.path.join(settings.BASE_DIR,str(nomorsurat) + '.docx'),'rb')
  
-        resp = HttpResponse(x,content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+        resp = HttpResponse(document,content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
         filename = str(nomorsurat) + '.docx'
         resp['Content-Disposition']='attachment;filename=%s'%format(filename)
         return resp
