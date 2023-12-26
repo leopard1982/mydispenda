@@ -1,0 +1,15 @@
+{% extends 'fullmenu.html' %}
+
+{% block contents%}
+<div class="h3 p-2 fw-bold">&rarr; Menambah Laporan Evaluasi<hr><div style="font-size:15px">A. Membuat Header Surat</div></div>
+
+<div class="p-2">
+    <form method="post">
+        {%csrf_token%}
+        {{form.media}}
+        {{form.as_div}}
+        <button type="submit" class="my-1 btn btn-primary">Berikutnya &gt;</button>
+    </form>
+
+</div>
+{% endblock %}

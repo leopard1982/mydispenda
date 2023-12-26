@@ -1,9 +1,9 @@
 from django.shortcuts import render, HttpResponseRedirect, HttpResponse
 from surat.forms import Pegawai_Form, Jabatan_Form, SuratTugas_Form,Pegawai_Update, Struktur_Form
 from surat.forms import SuratTugas_Update, Struktur_Update, User_Form, Konfigurasi_Form, SuratTugas_Form
-from surat.forms import DasarSuratTugas_Form
+from surat.forms import DasarSuratTugas_Form, Evaluasi_Form
 from surat.models import Pegawai,Jabatan, Struktur, RealUser, Konfigurasi, SuratTugas,DasarSuratTugas
-from surat.models import ST_Dasar, ST_Peserta
+from surat.models import ST_Dasar, ST_Peserta, LaporanEval
 from django.contrib.auth import authenticate
 from django.contrib.auth import login,logout
 from django.contrib.auth.models import User
@@ -484,3 +484,26 @@ def SuratTugas_Delete(request):
     SuratTugas.objects.all().filter(Nomor_Surat=nosurat).delete()
     
     return HttpResponseRedirect('/surattugas/list/')
+
+def Evaluasi_create(request):
+    if(not request.user.is_authenticated):
+        return HttpResponseRedirect('/')
+    if(request.method == 'POST'):
+        form = Evaluasi_Form(request.POST)
+        if(form.is_valid()):
+            form.save()
+            return HttpResponseRedirect('/evaluasi/list/')
+    form = Evaluasi_Form()
+    context = {
+        'form':form
+    }
+    return render(request,'evaluasi/create.html', context)
+
+def Evaluasi_list(request):
+    if(not request.user.is_authenticated):
+        return HttpResponseRedirect('/')
+    data = LaporanEval.objects.all()
+    context = {
+        'data':data
+    }
+    return render(request,'evaluasi/list.html', context)

@@ -1,5 +1,5 @@
 from django import forms
-from surat.models import Pegawai, Jabatan, Struktur, Konfigurasi, SuratTugas, RealUser, DasarSuratTugas
+from surat.models import Pegawai, Jabatan, Struktur, Konfigurasi, SuratTugas, RealUser, DasarSuratTugas, LaporanEval
 from django.contrib.auth.models import User
 from bootstrap_datepicker_plus.widgets import DatePickerInput
 
@@ -147,3 +147,24 @@ class DasarSuratTugas_Form(forms.ModelForm):
         widgets = {
             'dasar': forms.TextInput(attrs={'class':'form-control my-1','required':'required'}),        
         }
+
+class Evaluasi_Form(forms.ModelForm):
+    class Meta:
+        model = LaporanEval
+        fields = "__all__"
+        exclude = ['isDone']
+
+        widgets = {
+            'Nomor_Surat_Tugas': forms.Select(attrs={'class':'form-select my-1','required':'required'}),
+            'Nomor_Surat_Eval': forms.TextInput(attrs={'class':'form-control my-1','required':'required','placeholder':'Nomor Surat Evaluasi'}),
+            'Tanggal_Surat_Eval': DatePickerInput(attrs={'class':'form-control my-1','required':'required'}),
+            'Tahun_Anggaran': forms.TextInput(attrs={'class':'form-control my-1','required':'required','placeholder':'misal. 2024'}),
+            'Periode_Awal': forms.TextInput(attrs={'class':'form-control my-1','required':'required','placeholder':'misal. Januari 2023'}),
+            'Periode_Akhir': forms.TextInput(attrs={'class':'form-control my-1','required':'required','placeholder':'misal. Desember 2023'}),
+            'Periode_Pegawai': forms.TextInput(attrs={'class':'form-control my-1','required':'required','placeholder':'misal. Desember 2023'}),
+            'UPPD': forms.TextInput(attrs={'class':'form-control my-1','required':'required','placeholder':'diisi nama UPPD'}),    
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super(Evaluasi_Form,self).__init__(*args, **kwargs)
+        self.fields['Nomor_Surat_Tugas'].queryset = SuratTugas.objects.all().filter(isDone=True)

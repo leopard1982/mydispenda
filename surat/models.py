@@ -7,6 +7,21 @@ kelamin = [
     ('W','Wanita')
 ]
 
+bulan = [
+    ('JA','JANUARI'),
+    ('FE','FEBRUARI'),
+    ('MA','MARET'),
+    ('AP','APRIL'),
+    ('ME','MEI'),
+    ('JU','JUNI'),
+    ('JL','JULI'),
+    ('AG','AGUSTUS'),
+    ('SE','SEPTEMBER'),
+    ('OK','OKTOBER'),
+    ('NO','NOVEMBER'),
+    ('DE','DESEMBER')
+]
+
 class Jabatan(models.Model):
     Kode = models.CharField(max_length=3,primary_key=True,null=False,blank=False,default='',verbose_name='Kode Jabatan')
     Nama_Jabatan = models.CharField(max_length=20,verbose_name='Nama Jabatan')
@@ -55,6 +70,9 @@ class SuratTugas(models.Model):
     isDone = models.BooleanField(default=False)
     ID_NomorSurat = models.IntegerField(null=True,blank=True)
 
+    def __str__(self):
+        return self.Nomor_Surat
+
 class ST_Dasar(models.Model):
     Nomor_Surat = models.ForeignKey(SuratTugas, on_delete=models.RESTRICT)
     Dasar = models.ForeignKey(DasarSuratTugas,on_delete=models.RESTRICT)
@@ -70,14 +88,19 @@ class ST_Peserta(models.Model):
         unique_together = ['Nomor_Surat','Peserta']
 
 class LaporanEval(models.Model):
+    Nomor_Surat_Tugas = models.ForeignKey(SuratTugas,on_delete=models.RESTRICT,verbose_name="Nomor Acuan Surat Tugas")
     Nomor_Surat_Eval =  models.CharField(max_length=30,default='',primary_key=True,blank=False,null=False,verbose_name="Nomor Surat Evaluasi")
     Tanggal_Surat_Eval = models.DateField(auto_now_add=False,verbose_name="Tanggal Surat Evaluasi")
     Tahun_Anggaran = models.CharField(max_length=4,default="2024",verbose_name="Tahun Anggaran Evaluasi")
-    Nomor_Surat_Tugas = models.ForeignKey(SuratTugas,on_delete=models.RESTRICT,verbose_name="Nomor Surat Tugas")
-    Periode_Awal = models.DateField(auto_now_add=False,verbose_name="Periode Awal")
-    Periode_Akhir = models.DateField(auto_now_add=False,verbose_name="Periode Akhir")
-    Periode_Pegawai = models.DateField(auto_now_add=False,verbose_name="Periode Pengecekan Pegawai")
+    Periode_Awal = models.CharField(max_length=20,verbose_name="Periode Awal")
+    Periode_Akhir = models.CharField(max_length=20,verbose_name="Periode Akhir")
+    Periode_Pegawai = models.CharField(max_length=20,verbose_name="Periode Pengecekan Pegawai")
     UPPD = models.CharField(max_length=200,default="",verbose_name="Nama UPPD")
+    isDone = models.BooleanField(default=False,verbose_name="Laporan Evaluasi Selesai")
+
+    class Meta:
+        unique_together = ['Nomor_Surat_Eval']
+
 
 class LaporanEval_Hasil(models.Model):
     Nomor_Surat_Eval = models.ForeignKey(LaporanEval,on_delete=models.RESTRICT)
@@ -113,3 +136,18 @@ class LaporanEval_bmd_bergerak(models.Model):
 class LaporanEval_bmd_bergerak_kendaraan(models.Model):
     Detail = models.ForeignKey(LaporanEval_bmd_bergerak,on_delete=models.RESTRICT)
     Kendaraan = models.CharField(max_length=50,default="")
+
+class LaporanEval_pkb_perbandingan(models.Model):
+    Detail = models.ForeignKey(LaporanEval,on_delete=models.RESTRICT)
+    Keterangan = models.TextField(default="",primary_key=True)
+    Total_tahun1 = models.BigIntegerField(default=0)
+    Total_tahun2 = models.BigIntegerField(default=0)
+    Total_selisih = models.BigIntegerField(default=0)
+    Alasan = models.CharField(max_length=200)
+
+
+class LaporanEval_pkb_perbandingan_detail(models.Model):
+    Keterangan = models.ForeignKey(LaporanEval_pkb_perbandingan,on_delete=models.CASCADE)
+    tahun1 = models.BigIntegerField(default=0)
+    tahun2 = models.BigIntegerField(default=0)
+    bulan = models.CharField(max_length=2,choices=bulan,default='JA')

@@ -5,6 +5,7 @@ from surat.views import Struktur_create,Struktur_delete,Struktur_list,Struktur_u
 from surat.views import User_list, User_create, User_delete, User_update, Konfigurasi_list, Konfigurasi_create
 from surat.views import SuratTugas_create, DasarTugas_create, SuratTugas_list, DasarTugas_list
 from surat.views import Anggota_Tambah, Dasar_Tambah, Exportkan, SuratTugas_Done, SuratTugas_Delete
+from surat.views import Evaluasi_create, Evaluasi_list
 
 urlpatterns = [
     path('', Login,name="Login"),
@@ -35,5 +36,7 @@ urlpatterns = [
     path('surattugas/del/',SuratTugas_Delete,name='SuratTugas_Delete'),
     path('surattugas/add/dasar/',Dasar_Tambah,name="dasar_tambah"),
     path('surattugas/add/pegawai/',Anggota_Tambah,name="anggota_tambah"),
-    path('export/',Exportkan,name="exportkan")
+    path('export/',Exportkan,name="exportkan"),
+    path('evaluasi/create/',Evaluasi_create,name="evaluasi_create"),
+    path('evaluasi/list/',Evaluasi_list,name="evaluasi_list"),
 ]
