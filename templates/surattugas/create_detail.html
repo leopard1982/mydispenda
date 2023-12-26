@@ -159,6 +159,11 @@
             alert($("#pesertanya").val())
         }
     }
+    function set_done() {
+      window.location.href="/surattugas/d/?nosurat="+nomor_surat;
+    }
 </script>
-{% if surattugas.isDone%}{% else %}<button type="submit" class="my-1 btn btn-primary">Simpan Surat</button>{%endif%} <button type="button" class="my-1 btn btn-success">Cetak Surat Tugas</buttno>
+<div class="justify-content-between d-flex"> 
+  <button type="button" class="my-1 btn btn-info" onclick="window.location.href=document.referrer">&lt; kembali</button>{% if surattugas.isDone%}{% else %}<button type="button" class="my-1 btn btn-primary" onclick="set_done()">Final Submit</button>{%endif%} <button type="button" class="my-1 btn btn-success">Download Surat Tugas</button
+</div>
 {% endblock %}

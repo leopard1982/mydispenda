@@ -255,6 +255,8 @@ def SuratTugas_create(request):
     return render(request,'surattugas/create.html', context)
 
 def SuratTugas_list(request):
+    if(not request.user.is_authenticated):
+        return HttpResponseRedirect('/')
     data = SuratTugas.objects.all()
     context = {
         'data':data
@@ -276,6 +278,8 @@ def DasarTugas_create(request):
     return render(request,'dasarnya/create.html', context)
 
 def DasarTugas_list(request):
+    if(not request.user.is_authenticated):
+        return HttpResponseRedirect('/')
     data = DasarSuratTugas.objects.all()
     context = {
         'data':data
@@ -283,11 +287,15 @@ def DasarTugas_list(request):
     return render(request,'dasarnya/list.html', context)
 
 def Anggota_Tambah(request):
+    if(not request.user.is_authenticated):
+        return HttpResponseRedirect('/')
     try:
         nomorsurat = request.GET['surat']
     except:
         return HttpResponseRedirect('/surattugas/list/')
     try:
+        if SuratTugas.objects.get(Nomor_Surat=nomorsurat).isDone==True:
+            return HttpResponseRedirect('/surattugas/list/')
         st_peserta = ST_Peserta()
         #.objects.create(Dasar=DasarSuratTugas.objects.get(dasar=request.POST['dasarnya']),Surat_Tugas=SuratTugas.objects.get(Nomor_Surat=nomorsurat))
         st_peserta.Nomor_Surat = SuratTugas.objects.get(Nomor_Surat=nomorsurat)
@@ -298,11 +306,16 @@ def Anggota_Tambah(request):
     return HttpResponseRedirect('/surattugas/create/?surat=' + nomorsurat)
 
 def Dasar_Tambah(request):
+    if(not request.user.is_authenticated):
+        return HttpResponseRedirect('/')
     try:
         nomorsurat = request.GET['surat']
     except:
         return HttpResponseRedirect('/surattugas/list/')
+    
     try:
+        if SuratTugas.objects.get(Nomor_Surat=nomorsurat).isDone==True:
+            return HttpResponseRedirect('/surattugas/list/')
         st_dasar = ST_Dasar()
         #.objects.create(Dasar=DasarSuratTugas.objects.get(dasar=request.POST['dasarnya']),Surat_Tugas=SuratTugas.objects.get(Nomor_Surat=nomorsurat))
         st_dasar.Nomor_Surat = SuratTugas.objects.get(Nomor_Surat=nomorsurat)
@@ -313,6 +326,8 @@ def Dasar_Tambah(request):
     return HttpResponseRedirect('/surattugas/create/?surat=' + nomorsurat)
 
 def Exportkan(request):
+    if(not request.user.is_authenticated):
+        return HttpResponseRedirect('/')
     try:
         nomorsurat = request.GET['nosur']
         surattugas = SuratTugas.objects.get(ID_NomorSurat=nomorsurat)
@@ -440,3 +455,32 @@ def Exportkan(request):
         return resp
     else:
         return HttpResponseRedirect('/surattugas/list/')
+    
+def SuratTugas_Done(request):
+    if(not request.user.is_authenticated):
+        return HttpResponseRedirect('/')
+    
+    try:
+        nosurat = request.GET.get('nosurat')
+
+    except:
+        return HttpResponseRedirect('/surattugas/list/')
+    
+    SuratTugas.objects.all().filter(Nomor_Surat=nosurat).update(isDone=True)
+    
+    return HttpResponseRedirect('/surattugas/list/')
+
+def SuratTugas_Delete(request):
+    if(not request.user.is_authenticated):
+        return HttpResponseRedirect('/')
+    try:
+        nosurat = request.GET.get('nosurat')
+
+    except:
+        return HttpResponseRedirect('/surattugas/list/')
+    
+    ST_Dasar.objects.all().filter(Nomor_Surat=SuratTugas.objects.get(Nomor_Surat=nosurat)).delete()
+    ST_Peserta.objects.all().filter(Nomor_Surat=SuratTugas.objects.get(Nomor_Surat=nosurat)).delete()
+    SuratTugas.objects.all().filter(Nomor_Surat=nosurat).delete()
+    
+    return HttpResponseRedirect('/surattugas/list/')

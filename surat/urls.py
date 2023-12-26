@@ -4,7 +4,7 @@ from surat.views import Jabatan_create,Jabatan_delete, Jabatan_list, Jabatan_upd
 from surat.views import Struktur_create,Struktur_delete,Struktur_list,Struktur_update
 from surat.views import User_list, User_create, User_delete, User_update, Konfigurasi_list, Konfigurasi_create
 from surat.views import SuratTugas_create, DasarTugas_create, SuratTugas_list, DasarTugas_list
-from surat.views import Anggota_Tambah, Dasar_Tambah, Exportkan
+from surat.views import Anggota_Tambah, Dasar_Tambah, Exportkan, SuratTugas_Done, SuratTugas_Delete
 
 urlpatterns = [
     path('', Login,name="Login"),
@@ -31,6 +31,8 @@ urlpatterns = [
     path('dasartugas/create/',DasarTugas_create,name='DasarTugas_create'),
     path('surattugas/list/',SuratTugas_list,name='SuratTugas_list'),
     path('dasartugas/list/',DasarTugas_list,name='DasarTugas_list'),
+    path('surattugas/d/',SuratTugas_Done,name='SuratTugas_Done'),
+    path('surattugas/del/',SuratTugas_Delete,name='SuratTugas_Delete'),
     path('surattugas/add/dasar/',Dasar_Tambah,name="dasar_tambah"),
     path('surattugas/add/pegawai/',Anggota_Tambah,name="anggota_tambah"),
     path('export/',Exportkan,name="exportkan")
