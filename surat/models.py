@@ -70,34 +70,46 @@ class ST_Peserta(models.Model):
         unique_together = ['Nomor_Surat','Peserta']
 
 class LaporanEval(models.Model):
-    Nomor_Surat_Eval =  models.CharField(max_length=30,default='',primary_key=True,blank=False,null=False)
-    Tanggal_Surat_Eval = models.DateField(auto_now_add=False)
-    Tahun_Anggaran = models.CharField(max_length=4,default="2024")
-    Nomor_Surat_Tugas = models.ForeignKey(SuratTugas,on_delete=models.RESTRICT)
-    Periode_Awal = models.DateField(auto_now_add=False)
-    Periode_Akhir = models.DateField(auto_now_add=False)
-    Periode_Pegawai = models.DateField(auto_now_add=False)
-    UPPD = models.CharField(max_length=200,default="")
+    Nomor_Surat_Eval =  models.CharField(max_length=30,default='',primary_key=True,blank=False,null=False,verbose_name="Nomor Surat Evaluasi")
+    Tanggal_Surat_Eval = models.DateField(auto_now_add=False,verbose_name="Tanggal Surat Evaluasi")
+    Tahun_Anggaran = models.CharField(max_length=4,default="2024",verbose_name="Tahun Anggaran Evaluasi")
+    Nomor_Surat_Tugas = models.ForeignKey(SuratTugas,on_delete=models.RESTRICT,verbose_name="Nomor Surat Tugas")
+    Periode_Awal = models.DateField(auto_now_add=False,verbose_name="Periode Awal")
+    Periode_Akhir = models.DateField(auto_now_add=False,verbose_name="Periode Akhir")
+    Periode_Pegawai = models.DateField(auto_now_add=False,verbose_name="Periode Pengecekan Pegawai")
+    UPPD = models.CharField(max_length=200,default="",verbose_name="Nama UPPD")
 
 class LaporanEval_Hasil(models.Model):
     Nomor_Surat_Eval = models.ForeignKey(LaporanEval,on_delete=models.RESTRICT)
-    Hasil = models.CharField(max_length=200)
+    Hasil = models.CharField(max_length=200,verbose_name="Hasil Evaluasi")
 
 class LaporanEval_DataUmum(models.Model):
     Nomor_Surat_Eval = models.ForeignKey(LaporanEval,on_delete=models.RESTRICT)
-    Data = models.CharField(max_length=200)
+    Data = models.CharField(max_length=200,verbose_name="Data Umum")
 
 class LaporanEval_stat_peg(models.Model):
     Nomor_Surat_Eval = models.ForeignKey(LaporanEval,on_delete=models.RESTRICT)
-    Tipe_Pegawai = models.CharField(max_length=20)
-    Jumlah_Pegawai = models.IntegerField(default=0)
+    Tipe_Pegawai = models.CharField(max_length=20,verbose_name="Tipe Pegawai PNS/Office Boy/Pegawai Non PNS dll.")
+    Jumlah_Pegawai = models.IntegerField(default=0,verbose_name="Jumlah Pegawai")
 
 class LaporanEval_normatif_peg(models.Model):
     Nomor_Surat_Eval = models.ForeignKey(LaporanEval,on_delete=models.RESTRICT)
-    Nama_Pegawai = models.CharField(max_length=20)
-    NIP_Pegawai = models.CharField(max_length=50,default="")
-    Jabatan_Pegawai = models.CharField(max_length=200,default="")
+    Nama_Pegawai = models.CharField(max_length=50,verbose_name="Nama Pegawai")
+    NIP_Pegawai = models.CharField(max_length=50,default="",verbose_name="NIP Pegawai")
+    Jabatan_Pegawai = models.CharField(max_length=200,default="",verbose_name="Jabatan Pegawai")
 
 class LaporanEval_keuangan(models.Model):
     Nomor_Surat_Eval = models.ForeignKey(LaporanEval,on_delete=models.RESTRICT)
-    Detail = models.TextField(default="")
+    Detail = models.TextField(default="",verbose_name="Detail Keuangan")
+
+class LaporanEval_bmd_tak_gerak(models.Model):
+    Nomor_Surat_Eval = models.ForeignKey(LaporanEval,on_delete=models.RESTRICT)
+    Detail = models.TextField(default="",verbose_name="Detail Asset tak Bergerak")
+
+class LaporanEval_bmd_bergerak(models.Model):
+    Nomor_Surat_Eval = models.ForeignKey(LaporanEval,on_delete=models.RESTRICT)
+    Detail = models.TextField(default="",verbose_name="Detail Asset tak Bergerak",primary_key=True)
+
+class LaporanEval_bmd_bergerak_kendaraan(models.Model):
+    Detail = models.ForeignKey(LaporanEval_bmd_bergerak,on_delete=models.RESTRICT)
+    Kendaraan = models.CharField(max_length=50,default="")
