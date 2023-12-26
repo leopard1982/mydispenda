@@ -481,7 +481,7 @@ def SuratTugas_Delete(request):
     
     ST_Dasar.objects.all().filter(Nomor_Surat=SuratTugas.objects.get(Nomor_Surat=nosurat)).delete()
     ST_Peserta.objects.all().filter(Nomor_Surat=SuratTugas.objects.get(Nomor_Surat=nosurat)).delete()
-    SuratTugas.objects.all().filter(Nomor_Surat=nosurat).delete()
+    SuratTugas.objects.all().filter(Q(Nomor_Surat=nosurat) & ~Q(isDone=True)).delete()
     
     return HttpResponseRedirect('/surattugas/list/')
 
@@ -507,3 +507,16 @@ def Evaluasi_list(request):
         'data':data
     }
     return render(request,'evaluasi/list.html', context)
+
+def Evaluasi_Delete(request):
+    if(not request.user.is_authenticated):
+        return HttpResponseRedirect('/')
+    try:
+        nosurat = request.GET.get('nosurat')
+
+    except:
+        return HttpResponseRedirect('/evaluasi/list/')
+    
+    LaporanEval.objects.all().filter(~Q(isDone=True) & Q(Nomor_Surat_Eval=nosurat)).delete()
+    
+    return HttpResponseRedirect('/evaluasi/list/')
