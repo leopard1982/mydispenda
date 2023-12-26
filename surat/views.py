@@ -344,7 +344,9 @@ def Exportkan(request):
 
         table = document.add_table(rows=1,cols=2)
         row = table.rows[0].cells
-        row[0].add_paragraph("DASAR:")
+        paragraph=row[0].add_paragraph()
+        runner = paragraph.add_run("DASAR:")
+        runner.bold=True
         row[1].add_paragraph("Keputusan Menteri Dalam Negeri Nomor 16 Tahun 2013 tanggal 23 Januari 2013 tentang Pelaksanaan Perjalanan Dinas;",style="List Number")
         row[1].add_paragraph("Peraturan Daerah Provinsi Jawa Tengah Nomor 12 Tahun 2021 tentang Anggaran Pendapatan dan Belanja Daerah Provinsi Jawa Tengah Tahun Anggaran 2022;",style="List Number")
         row[1].add_paragraph("Peraturan Gubernur Jawa Tengah Nomor 17 Tahun 2013 tentang Perjalanan Dinas Gubernur / Wakil Gubernur, Pimpinan dan Anggota Dewan Perwakilan Rakyat Daerah, Pegawai Negeri Sipil, Calon Pegawai Negeri Sipil Dan Pegawai Non Pegawai Negeri Sipil;",style="List Number")
@@ -361,6 +363,72 @@ def Exportkan(request):
         for cell in table.columns[1].cells:
             cell.width = Cm(14)
         
+        paragraph = document.add_paragraph()
+        runner = paragraph.add_run("\nMEMERINTAHKAN")
+        runner.bold=True
+        paragraph.alignment = 1
+
+        table = document.add_table(rows=1,cols=2)
+        row = table.rows[0].cells
+        
+        paragraph = row[0].add_paragraph()
+        runner = paragraph.add_run("KEPADA:")
+        runner.bold=True
+        parnya = row[1].add_paragraph("1.   Nama:\t" + surattugas.Ketua_Tim.Nama)
+        runner = parnya.add_run("\n      NIP:\t" + surattugas.Ketua_Tim.NIP)
+        runner = parnya.add_run("\n      Jabatan:\t" + surattugas.Ketua_Tim.Jabatan.Nama_Jabatan)
+
+
+        #lookup for dasar tambahan
+        peserta = ST_Peserta.objects.all().filter(Nomor_Surat=SuratTugas.objects.get(ID_NomorSurat=nomorsurat))
+        counter = 2
+        if(peserta.count()>0):
+            for pesertanya in peserta:
+                parnya = row[1].add_paragraph(str(counter)+".   Nama:\t" + pesertanya.Peserta.Nama)
+                runner = parnya.add_run("\n      NIP:\t" + pesertanya.Peserta.NIP)
+                runner = parnya.add_run("\n      Jabatan:\t" + pesertanya.Peserta.Jabatan.Nama_Jabatan)
+
+        for cell in table.columns[0].cells:
+            cell.width = Cm(3)
+        for cell in table.columns[1].cells:
+            cell.width = Cm(14)
+
+        table = document.add_table(rows=1,cols=2)
+        row = table.rows[0].cells
+        paragraph=row[0].add_paragraph()
+        runner = paragraph.add_run("UNTUK:")
+        runner.bold=True
+        mypar=row[1].add_paragraph("")
+        runner = mypar.add_run("1.   Melaksanakan tugas:\t%s\n"%surattugas.Tugas)
+        runner = mypar.add_run("      di:\t\t\t\t%s\n"%surattugas.Lokasi_Tugas)
+        runner = mypar.add_run("      tanggal:\t\t\t%s\n"%surattugas.Tanggal_Tugas)
+        runner = mypar.add_run("2.   Tidak menerima gratifikasi dalam bentuk apapun sesuai ketentuan;\n")
+        runner = mypar.add_run("3.   Melapor kepada Pejabat setempat guna pelaksanaan tugas tersebut;\n")
+        runner = mypar.add_run("4.   Melaporkan Hasil Pelaksanaan Tugas kepada Pejabat pemberi tugas.")
+        print(surattugas)
+           
+        for cell in table.columns[0].cells:
+            cell.width = Cm(3)
+        for cell in table.columns[1].cells:
+            cell.width = Cm(14)
+
+        paragraph = document.add_paragraph()
+        runner = paragraph.add_run("\n\t\t\t\t\t\t\tDitetapkan di:\tSemarang\n")
+        runner = paragraph.add_run("\t\t\t\t\t\t\tpada tanggal:\t\t%s\n" %surattugas.Tanggal_Surat)
+        runner = paragraph.add_run("\t\t\t\t\t\t\t___________________________________________________\n")
+        PLT = Konfigurasi.objects.all()[0].isPLT
+        if(PLT):
+            PLT="Plt. "
+        else:
+            PLT=""
+        runner = paragraph.add_run(PLT + "\t\t\t\t\t\t\tKEPADA BADAN PENGELOLA PENDAPATAN\n")
+        runner = paragraph.add_run("\t\t\t\t\t\t\tDAERAH PROVINSI JAWA TENGAH\n")
+        runner = paragraph.add_run("\t\t\t\t\t\t\t"+Konfigurasi.objects.all()[0].Kepala_Bapeda.Jabatan.Nama_Jabatan)
+        runner = paragraph.add_run("\n\n\n\n\n\n")
+        runner = paragraph.add_run("\t\t\t\t\t\t\t")
+        runner = paragraph.add_run(Konfigurasi.objects.all()[0].Kepala_Bapeda.Nama)
+        runner.underline=True
+        runner = paragraph.add_run("\n\t\t\t\t\t\t\t"+Konfigurasi.objects.all()[0].Kepala_Bapeda.Struktur.Nama_Struktur)
 
         document.save(os.path.join(settings.BASE_DIR,str(nomorsurat) + '.docx'))
 
@@ -371,4 +439,4 @@ def Exportkan(request):
         resp['Content-Disposition']='attachment;filename=%s'%format(filename)
         return resp
     else:
-        return HttpResponse("nomor surat g ketemu mennnn")
+        return HttpResponseRedirect('/surattugas/list/')
