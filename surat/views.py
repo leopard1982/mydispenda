@@ -1,7 +1,7 @@
 from django.shortcuts import render, HttpResponseRedirect, HttpResponse
 from surat.forms import Pegawai_Form, Jabatan_Form, SuratTugas_Form,Pegawai_Update, Struktur_Form
 from surat.forms import SuratTugas_Update, Struktur_Update, User_Form, Konfigurasi_Form, SuratTugas_Form
-from surat.forms import DasarSuratTugas_Form, Evaluasi_Form
+from surat.forms import DasarSuratTugas_Form, Evaluasi_Form, Evaluasi_Form_Update
 from surat.models import Pegawai,Jabatan, Struktur, RealUser, Konfigurasi, SuratTugas,DasarSuratTugas
 from surat.models import ST_Dasar, ST_Peserta, LaporanEval
 from django.contrib.auth import authenticate
@@ -488,11 +488,47 @@ def SuratTugas_Delete(request):
 def Evaluasi_create(request):
     if(not request.user.is_authenticated):
         return HttpResponseRedirect('/')
+    try:
+        nosur=request.GET.get('surat')
+        instance = LaporanEval.objects.get(Nomor_Surat_Eval=nosur)
+        
+        if request.method == 'POST':
+            form = Evaluasi_Form_Update(request.POST,instance=instance)
+            if form.is_valid():
+                form.save()
+            nosur_tugas = instance.Nomor_Surat_Tugas.Nomor_Surat
+            ketua_tim = SuratTugas.objects.get(Nomor_Surat=nosur_tugas)
+            anggota_tim = ST_Peserta.objects.all().filter(Nomor_Surat=ketua_tim)
+            context = {
+                'evaluasi':instance,
+                'ketua_tim':ketua_tim,
+                'anggota_tim':anggota_tim,
+            }
+            print("berhasil")
+            return render(request, 'evaluasi/create_detail.html',context)
+
+        form = Evaluasi_Form_Update(instance=instance)
+        context = {
+            'form':form
+        }
+        return render(request,'evaluasi/create.html', context)
+    except:
+        pass
     if(request.method == 'POST'):
         form = Evaluasi_Form(request.POST)
         if(form.is_valid()):
             form.save()
-            return HttpResponseRedirect('/evaluasi/list/')
+            instance = LaporanEval.objects.get(Nomor_Surat_Eval=request.POST.get('Nomor_Surat_Eval'))
+            nosur_tugas = instance.Nomor_Surat_Tugas.Nomor_Surat
+            ketua_tim = SuratTugas.objects.get(Nomor_Surat=nosur_tugas)
+            anggota_tim = ST_Peserta.objects.all().filter(Nomor_Surat=ketua_tim)
+            context = {
+                'evaluasi':instance,
+                'ketua_tim':ketua_tim,
+                'anggota_tim':anggota_tim,
+            }
+            print("berhasil")
+            return render(request, 'evaluasi/create_detail.html',context)
     form = Evaluasi_Form()
     context = {
         'form':form
