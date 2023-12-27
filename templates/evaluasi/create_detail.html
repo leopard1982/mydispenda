@@ -103,27 +103,29 @@
     </form>
 </div>
 <div style="font-size:15px;font-weight:bold;margin-top:20px">B. Anggota Tim</div>
-<table class="table">
-  <tr>
-    <td>Ketua Tim:</td>
-    <td>Nama: {{ketua_tim.Ketua_Tim.Nama}}<br/>NIP: {{ketua_tim.Ketua_Tim.NIP}}</td>
-  </tr>
-  <tr>
-    <td>Anggota Tim:</td>
-    <td>
-      <ol>
-        {% for anggota in anggota_tim %}
-          <li>
-            Nama: {{anggota.Peserta.Nama}}<br>
-            NIP: {{anggota.Peserta.NIP}}
-          </li>
-        {% endfor%}
-      </ol>
-    </td>
-  </tr>
-</table>
+<div style="margin-left:10px">
+  <table class="table">
+    <tr>
+      <td>Ketua Tim:</td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nama: {{ketua_tim.Ketua_Tim.Nama}}<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NIP: {{ketua_tim.Ketua_Tim.NIP}}</td>
+    </tr>
+    <tr>
+      <td>Anggota Tim:</td>
+      <td>
+        <ol>
+          {% for anggota in anggota_tim %}
+            <li>
+              Nama: {{anggota.Peserta.Nama}}<br>
+              NIP: {{anggota.Peserta.NIP}}
+            </li>
+          {% endfor%}
+        </ol>
+      </td>
+    </tr>
+  </table>  
+</div>
 <hr>
-<div style="font-size:15px;font-weight:bold;margin-top:20px">C. Menambah Dasar Surat Tugas</div>
+{% comment %} <div style="font-size:15px;font-weight:bold;margin-top:20px">C. Menambah Dasar Surat Tugas</div>
 {% if evaluasi.isDone%}{% else %}<div class="d-flex justify-content-end"><a class="btn btn-secondary"  data-bs-toggle="modal" data-bs-target="#exampleModal1">+ dasar surat tugas</a></div>{% endif %} 
 <table class="table">
     
@@ -167,7 +169,7 @@
         </tr>
         {% endfor%}
     </tbody>
-</table>
+</table> {% endcomment %}
 <hr>
 
 <script>
