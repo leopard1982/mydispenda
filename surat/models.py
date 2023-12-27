@@ -106,6 +106,13 @@ class LaporanEval_Hasil(models.Model):
     Nomor_Surat_Eval = models.ForeignKey(LaporanEval,on_delete=models.RESTRICT)
     Hasil = models.CharField(max_length=200,verbose_name="Hasil Evaluasi")
 
+class LaporanEval_Rekomendasi(models.Model):
+    Nomor_Surat_Eval = models.ForeignKey(LaporanEval,on_delete=models.RESTRICT)
+    Rekomendasi = models.TextField(verbose_name="Hasil Rekomendasi")
+    
+    class Meta:
+        unique_together = ['Nomor_Surat_Eval']
+
 class LaporanEval_DataUmum(models.Model):
     Nomor_Surat_Eval = models.ForeignKey(LaporanEval,on_delete=models.RESTRICT)
     Data = models.CharField(max_length=200,verbose_name="Data Umum")
