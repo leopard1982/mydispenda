@@ -46,7 +46,7 @@ def getJWT(request):
         auth=authenticate(username=username,password=password)
         
         if(auth is not None):
-            myfile=open(os.path.join(settings.BASE_DIR,r'static\data\hallo.txt'),'r')
+            myfile=open(os.path.join(settings.BASE_DIR,r'static/data/hallo.txt'),'r')
             print(myfile.read())
             user = ExtendUser.objects.all().filter(username=auth)
             serialuser = serialUser(user,many=True)

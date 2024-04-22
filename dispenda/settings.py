@@ -26,8 +26,8 @@ SECRET_KEY = 'django-insecure-xn%77i#h-lw*=b7x8%##%xpc$7*zzst6#wq1q5+c(afl=8j&!f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['leopard.pythonanywhere.com','127.0.0.1','localhost','192.168.68.113','192.168.1.50','192.168.68.107','leon1982.pythonanywhere.com','license.sublimehq.com']
-CSRF_TRUSTED_ORIGINS = ['https://leopard.pythonanywhere.com','http://localhost:8000','http://127.0.0.1:8000','http://192.168.1.50','https://leon1982.pythonanywhere.com']
+ALLOWED_HOSTS = ['leopard.pythonanywhere.com','172.29.130.17','127.0.0.1','localhost','192.168.68.113','192.168.1.50','192.168.68.107','leon1982.pythonanywhere.com','license.sublimehq.com']
+CSRF_TRUSTED_ORIGINS = ['https://leopard.pythonanywhere.com','http://172.29.130.17:8080','http://localhost:8000','http://127.0.0.1:8000','http://192.168.1.50','https://leon1982.pythonanywhere.com']
 
 
 
@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'dispenda_surat',
-    'bootstrap_datepicker_plus',
     'corsheaders',
     'rest_framework'
 ]
@@ -84,8 +83,12 @@ WSGI_APPLICATION = 'dispenda.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'dispenda.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'kgvwbbnk',
+        'USER': 'kgvwbbnk',
+        'PASSWORD': '4dhmRooWF5q5_AA-5aXeQT8XiLsKkQr1',
+        'HOST':'floppy.db.elephantsql.com',
+        'PORT':5432
     }
 }
 
@@ -142,7 +145,7 @@ STATIC_ROOT = os.path.join(BASE_DIR,'staticroot')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = ["http://localhost:8000","https://leopard.pythonanywhere.com"]
+CORS_ALLOWED_ORIGINS = ["http://172.29.130.17:8080","http://localhost:8000","https://leopard.pythonanywhere.com"]
 
 
 AUTH_USER_MODEL = "dispenda_surat.ExtendUser"
