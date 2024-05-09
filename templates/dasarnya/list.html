@@ -1,0 +1,21 @@
+{% extends 'fullmenu.html' %}
+
+{% block contents%}
+<div class="h3 p-2 fw-bold">&rarr; Daftar Dasar Tugas</div>
+<div>
+    <table class='table'>
+        <thead>
+            <th>No.</th>
+            <th>Dasar Tugas</th>
+            <th>Action</th>
+        </thead>
+        {% for datanya in data %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{datanya.dasar}}</td>
+            <td><button type='button' class="btn btn-secondary">view</button> <button type='button' class="btn btn-danger">Delete</button></td>
+        </tr>
+        {% endfor%}
+    </table>
+</div>
+{% endblock %}

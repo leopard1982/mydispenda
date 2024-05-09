@@ -1,0 +1,17 @@
+{% extends 'fullmenu.html' %}
+
+{% block contents %}
+<div>
+    <div class="h3 p-2 fw-bold">&rarr; Menambah Struktur Jabatan</div>
+    <div class="p-2">
+        <form method="post">
+            {% csrf_token%}
+            {{myform.as_div}}
+            <button type="submit" class="my-1 btn btn-primary">Tambahkan</button>
+        </form>
+        {{testform.as_div}}
+    
+    </div>
+</div>
+
+{% endblock %}

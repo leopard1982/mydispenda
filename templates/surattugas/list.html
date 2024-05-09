@@ -1,0 +1,29 @@
+{% extends 'fullmenu.html' %}
+
+{% block contents%}
+<div class="h3 p-2  fw-bold">&rarr; Daftar Surat Tugas</div>
+<div>
+    <table class='table'>
+        <thead>
+            <th>No.</th>
+            <th>Nomor</th>
+            <th>Tanggal</th>
+            <th>Lokasi</th>
+            <th>Action</th>
+        </thead>
+        {% for datanya in data %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{datanya.Nomor_Surat}}</td>
+            <td>{{datanya.Tanggal_Surat}}</td>
+            <td>{{datanya.Lokasi_Tugas}}</td>
+            <td>
+                <div class="d-flex justify-content-between">
+                    <button type='button' class="btn btn-secondary" onclick="window.location.href='/surattugas/create/?surat={{datanya.Nomor_Surat}}'">view</button>{% if datanya.isDone %}{%else%}<button type='button' class="btn btn-danger" onclick="window.location.href='/surattugas/del/?nosurat={{datanya.Nomor_Surat}}'">Delete</button>{% endif %} <button type='button' class="btn btn-info" onclick="window.location.href='/export/?nosur={{datanya.ID_NomorSurat}}'">Download</button>
+                </div>
+            </td>
+        </tr>
+        {% endfor%}
+    </table>
+</div>
+{% endblock %}

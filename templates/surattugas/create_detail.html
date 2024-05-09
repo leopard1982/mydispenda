@@ -1,0 +1,169 @@
+{% extends 'fullmenu.html' %}
+
+{% block contents%}
+
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel1">Menambahkan Dasar Tugas</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Pilih Dasar Tugas:
+          <form method="post" action="/surattugas/add/dasar/?surat={{surattugas.Nomor_Surat}}">
+            {% csrf_token %}
+            <select name="dasarnya" class="form-select" required>
+                    <option value="">--------</option>
+                {% for dasar in list_dasar%}
+                    <option value="{{dasar.dasar}}">{{dasar.dasar}}</option>
+                {% endfor%}
+            </select>
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+          <button type="submit" class="btn btn-primary" >Tambahkan</button>
+        </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel2">Menambahkan Peserta Tugas</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form method="post" action="/surattugas/add/pegawai/?surat={{surattugas.Nomor_Surat}}">
+            {% csrf_token %}
+            Pilih Peserta Tugas:
+            <select name="pesertanya" class="form-select" required>
+                  <option value="">--------</option>
+              {% for peserta in list_peserta%}
+                  <option value="{{peserta.NIP}}">{{peserta.Nama}} ({{peserta.NIP}})</option>
+              {% endfor%}
+            </select>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary" >Tambahkan</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<div class="h3 p-2 fw-bold">&rarr; Menambah Surat Tugas<hr><div style="font-size:15px;font-weight:bold">A. Detail Surat Tugas</div></div>
+
+<div class="p-2">
+    <form method="post">
+        {%csrf_token%}
+        <table class='table'>
+            <tr>
+                <td>Nomor Surat Tugas:</td>
+                <td>{{surattugas.Nomor_Surat}} <input type="hidden" id="surattugasku" value="{{surattugas.Nomor_Surat}}"/>
+                </td>
+            </tr>
+            <tr>
+                <td>Tanggal Surat:</td>
+                <td>{{surattugas.Tanggal_Surat}}</td>
+            </tr>
+            <tr>
+                <td>Detail Tugas:</td>
+                <td>{{surattugas.Tugas}}</td>
+            </tr>
+            <tr>
+                <td>Lokasi Tugas:</td>
+                <td>{{surattugas.Lokasi_Tugas}}</td>
+            </tr>
+            <tr>
+                <td>Tanggal Penugasan:</td>
+                <td>{{surattugas.Tanggal_Tugas}}</td>
+            </tr>
+            <tr>
+                <td>Kepala Bapeda:</td>
+                <td>{{surattugas.Kepala_Bapeda}}</td>
+            </tr>
+            <tr>
+                <td>Ketua Tim:</td>
+                <td>{{surattugas.Ketua_Tim}}</td>
+            </tr>
+        </table>
+        
+    </form>
+</div>
+<hr>
+<div style="font-size:15px;font-weight:bold;margin-top:20px">B. Menambah Dasar Surat Tugas</div>
+{% if surattugas.isDone%}{% else %}<div class="d-flex justify-content-end"><a class="btn btn-secondary"  data-bs-toggle="modal" data-bs-target="#exampleModal1">+ dasar surat tugas</a></div>{% endif %} 
+<table class="table">
+    
+        <th>
+            <td>No.</td>
+            <td>Dasar Tugas</td>
+            {% if surattugas.isDone %}{% else %}<td></td>{% endif %}
+        </th>
+    
+    
+        {% for dasarnya in dasar%}
+        <tr>
+            <td></td>
+            <td>{{forloop.counter}}</td>
+            <td>{{dasarnya.Dasar.dasar}}</td>
+            {% if surattugas.isDone %}{% else %}<td><button type='button' class="btn btn-danger">Hapus</button></td>{% endif %}
+        </tr>
+        {% endfor%}
+    
+</table>
+<hr>
+<div style="font-size:15px;font-weight:bold;margin-top:20px">C. Menambah Anggota Tim</div>
+{% if surattugas.isDone%}{% else %}<div class="d-flex justify-content-end"><button type="button" class="btn btn-secondary"  data-bs-toggle="modal" data-bs-target="#exampleModal2">+ anggota tim</button></div>{%endif%}
+<table class="table">
+    <thead>
+        <th>
+            <td>No.</td>
+            <td>Kode Pegawai</td>
+            <td>Nama Pegawai</td>
+            {% if surattugas.isDone %}{% else %}<td></td>{% endif %}
+        </th>
+    </thead>
+    <tbody>
+        {% for pesertanya in peserta %}
+        <tr>
+            <td></td>
+            <td>{{forloop.counter}}</td>
+            <td>{{pesertanya.Peserta.NIP}}</td>
+            <td>{{pesertanya.Peserta.Nama}}</td>
+            {% if surattugas.isDone %}{% else %}<td><button type="button" class="btn btn-danger">Hapus</button></td>{% endif %}
+        </tr>
+        {% endfor%}
+    </tbody>
+</table>
+<hr>
+
+<script>
+    nomor_surat = $("#surattugasku").val();
+
+    function tambahkan_dasar() {
+        if($("#dasarnya").val()!="") {
+            alert($("#tokencsrf").val());
+        }
+    }
+    function tambahkan_peserta() {
+        if($("#pesertanya").val()!="") {
+            alert($("#pesertanya").val())
+        }
+    }
+    function set_done() {
+      window.location.href="/surattugas/d/?nosurat="+nomor_surat;
+    }
+</script>
+<div class="justify-content-between d-flex"> 
+  <button type="button" class="my-1 btn btn-info" onclick="window.location.href=document.referrer">&lt; kembali</button>{% if surattugas.isDone%}{% else %}<button type="button" class="my-1 btn btn-primary" onclick="set_done()">Final Submit</button>{%endif%} <button type="button" class="my-1 btn btn-success">Download Surat Tugas</button
+</div>
+{% endblock %}

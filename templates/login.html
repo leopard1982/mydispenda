@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=D, initial-scale=1.0">
+    <title>Dispenda ::: Login</title>
+</head>
+<body class="bg-dark">
+    <div class="d-flex justify-content-center align-items-center">
+        <div style="width: 300px; height: 400px;margin-top: 50px;background-color: whitesmoke;border-radius: 10px;">
+            <div class="d-flex justify-content-center align-items-center m-2 bg-light p-2" style="border-radius: 10px;">
+                <img alt="" src="{% static 'img/logo.png'%}" style="height: 40px;width: 35px; margin-right: 20px;"/>
+                <div class="d-block align-items-end">
+                    <div class="fs-4 fw-bold">CMS-DISPENDA</div>
+                    <div style="margin-top: -5px;font-size: 12px;text-align: right;">v.1.0</div>
+                </div>
+            </div>
+            <div class="my-3 p-2">
+                <form method="post">
+                    {% csrf_token%}
+                    <div class="my-2">Username:</div>
+                    <div class="my-2"><input type="text" class="form-control" placeholder="username" required name="username"></div>
+                    <div class="my-2">Password:</div>
+                    <div class="my-2"><input type="password" class="form-control" placeholder="password" name="password" required></div>
+                    <div class="my-2 justify-content-center d-flex align-items-center"><input type="checkbox" name="human" id="save" required><span class="mx-2">saya bukan robot</span></div>
+                    <div class="my-3 d-flex justify-content-center"><button type="submit" class="btn btn-success" >login</button></div>    
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

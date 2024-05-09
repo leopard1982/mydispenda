@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=D, initial-scale=1.0">
+    <title>Dispenda Semarang</title>
+</head>
+
+<body>
+    <h3 class="text-center p-2">Dinas Pendapatan Daerah</h3>
+    <center><hr class="w-50 align-items-center"></center>
+
+    <div class="bg-info p-2 mx-2 ">
+        Peserta Project
+    </div>
+    <div class="m-2"></2>
+    <div>
+        <div class="px-2">
+            <table>
+                <tr>
+                    <td>Nama:</td>
+                    <td><input type="text" id="nama"/></td>                    
+                </tr>
+                <tr>
+                    <td>Nomor NIK:</td>
+                    <td><input type="text" id="nik"/></td>
+                </tr>
+                <tr>
+                    <td><input type="button" colspan="2" class="btn btn-success" value="Tambahkan" onclick="tambahkanpeserta()"></td>
+                </tr>
+            </table>
+    </div>
+
+    <div class="p-2 my-3 ">
+        <div class="h5">
+            Daftar Peserta 
+        </div>
+        <center><div id="belum_ada">=== Belum Ada Data ===</div></center>
+        <table class="table" id="peserta" >
+            
+        </table>
+    </div>
+
+
+
+    <script>
+        let counter_peserta = 0;
+        const mylist=[];
+
+        function tambahkanpeserta() {
+            let nama = $("#nama").val();
+            let nik = $("#nik").val();
+
+            console.log(nama.length);
+            console.log(nik.length);
+            console.log(counter_peserta);
+            
+            if(nama.length==0 || nik.length==0) {
+                alert("Data tidak boleh kosong!");
+            } else {
+                // $("#peserta").append("<tr><td class='p-2' id='nama"+ counter_peserta.toString()+"' >" + nama +"</td><td class='p-2'  id='nik"+ counter_peserta.toString()+"'>"+ nik +"</td><td><input type='button' class='btn btn-outline-danger' value='delete'></td></tr>");
+                if(mylist.findIndex((item)=>item.nama.toUpperCase()==nama.toUpperCase())>=0 && mylist.findIndex((item)=>item.nik.toUpperCase()==nik.toUpperCase())>=0) {
+                    alert("Data Pernah Diinput!")
+                } else {
+                    mylist.push(
+                    {
+                        'nama': nama,
+                        'nik':nik,
+                        'id':counter_peserta
+                    }
+                );
+                }
+
+            }
+            counter_peserta++;
+            refreshpeserta();
+        }
+
+        function refreshpeserta() {
+            if(mylist.length==0) {
+                $("#belum_ada").show();
+                $("#peserta").hide();
+            }
+            else {
+                $("#peserta").show();
+                $("#belum_ada").hide();
+                $("#peserta").empty();
+                $("#peserta").append("<thead><td>Nama</td><td>Nomor NIK</td><td>Action</td></thead>");
+                mylist.forEach((item,indeks) => {
+                    $("#peserta").append("<tr><td class='p-2' id='nama"+ item.id+"' >" + (indeks+1).toString() + ". " + item.nama.toUpperCase() +"</td><td class='p-2'  id='nik"+ item.id +"'>"+ item.nik.toUpperCase() +"</td><td><input type='button' class='btn btn-outline-danger' value='delete' id='del"+item.id+"'></td></tr>");
+                    $("#del" + item.id).click(function() {
+                        deletepeserta(item.id);
+                    });
+                });
+            }
+
+            
+            
+        }
+
+        function deletepeserta(id) {
+            let indeks = mylist.findIndex((item) => item.id==id)
+            mylist.splice(indeks,1);
+            refreshpeserta();
+        }
+
+
+    </script>
+</body>
+
+</html>
